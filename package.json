@@ -1,0 +1,14 @@
+{
+  "name": "plan-app-productividad",
+  "version": "1.0.0",
+  "description": "Plan de Desarrollo y Roadmap Estratégico de App de Productividad (OmniTask / TimeMaster)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3045",
+    "build": "vite build",
+    "preview": "vite preview --port 3045"
+  },
+  "devDependencies": {
+    "vite": "^5.4.21"
+  }
+}

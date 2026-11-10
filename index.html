@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan de Desarrollo — App de Productividad</title>
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #111a28;
+      --border: #1e2e46;
+      --cyan: #06b6d4;
+      --teal: #14b8a6;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --indigo: #6366f1;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: #0c1422; border-bottom: 1px solid var(--border); padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-logo { font-size: 26px; background: rgba(20, 184, 166, 0.15); border: 1px solid var(--teal); border-radius: 10px; padding: 6px 12px; }
+    .brand-text h1 { font-size: 19px; font-weight: 800; color: #fff; }
+    .brand-text p { font-size: 13px; color: var(--text-muted); }
+
+    nav.tabs { background: #0e1726; border-bottom: 1px solid var(--border); padding: 0 28px; display: flex; gap: 8px; overflow-x: auto; }
+    .tab-btn { background: none; border: none; border-bottom: 3px solid transparent; color: var(--text-muted); padding: 14px 18px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; white-space: nowrap; }
+    .tab-btn:hover { color: #fff; }
+    .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+    main { flex: 1; padding: 28px; max-width: 1300px; margin: 0 auto; width: 100%; }
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .card-title { font-size: 17px; font-weight: 700; margin-bottom: 16px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+
+    /* Timeline / Phases */
+    .timeline { position: relative; padding-left: 28px; border-left: 2px solid #1e293b; margin-left: 10px; }
+    .phase-item { position: relative; margin-bottom: 32px; }
+    .phase-bullet { position: absolute; left: -36px; top: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--teal); border: 3px solid var(--bg); box-shadow: 0 0 10px var(--teal); }
+    .phase-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+    .phase-title { font-size: 16px; font-weight: 700; color: #fff; }
+    .phase-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+    .badge-done { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge-progress { background: rgba(6, 182, 212, 0.2); color: #38bdf8; }
+    .badge-planned { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+    .phase-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+    .deliverables-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .deliverables-list li { font-size: 13px; color: #cbd5e1; display: flex; align-items: center; gap: 8px; }
+
+    /* Eisenhower Matrix */
+    .eisenhower-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 800px) { .eisenhower-grid { grid-template-columns: 1fr; } }
+    .matrix-quadrant { background: #0d1524; border: 1px solid var(--border); border-radius: 10px; padding: 18px; min-height: 200px; }
+    .quadrant-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .q1 { border-top: 3px solid #f43f5e; }
+    .q2 { border-top: 3px solid #3b82f6; }
+    .q3 { border-top: 3px solid #f59e0b; }
+    .q4 { border-top: 3px solid #64748b; }
+    .feature-card { background: var(--card-bg); border: 1px solid var(--border); padding: 10px; border-radius: 6px; margin-bottom: 8px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* Architecture Stack Cards */
+    .stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .stack-card { background: #0c1424; border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+    .stack-title { font-size: 14px; font-weight: 700; color: var(--teal); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .stack-items { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">⚡</div>
+      <div class="brand-text">
+        <h1>Plan de Desarrollo: App de Productividad</h1>
+        <p>Roadmap de Ingeniería, Arquitectura Técnica y Matriz Estratégica (OmniTask / TimeMaster)</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="showTab('roadmap')">🗺️ Roadmap & Fases</button>
+    <button class="tab-btn" onclick="showTab('eisenhower')">🎯 Matriz de Prioridades (Eisenhower)</button>
+    <button class="tab-btn" onclick="showTab('arch')">🏗️ Arquitectura Técnica</button>
+  </nav>
+
+  <main>
+    <!-- ROADMAP VIEW -->
+    <section id="view-roadmap" class="view active">
+      <div class="card">
+        <div class="card-title">Línea de Tiempo y Fases de Construcción</div>
+        <div class="timeline">
+          <div class="phase-item">
+            <div class="phase-bullet" style="background:#10b981; box-shadow:0 0 10px #10b981;"></div>
+            <div class="phase-header">
+              <span class="phase-title">Fase 1: Motor Offline-First y Almacenamiento Local Robusto</span>
+              <span class="phase-badge badge-done">Completado</span>
+            </div>
+            <p class="phase-desc">Base de datos embebida con IndexedDB y sincronización reactiva local sin latencia de red.</p>
+            <ul class="deliverables-list">
+              <li>✅ Captura rápida de tareas en menos de 200 ms</li>
+              <li>✅ Clasificación por áreas (Trabajo, Finanzas, Salud, Taller)</li>
+              <li>✅ Soporte para subtareas, prioridades P1-P4 y tags rápidos</li>
+            </ul>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-bullet" style="background:#06b6d4; box-shadow:0 0 10px #06b6d4;"></div>
+            <div class="phase-header">
+              <span class="phase-title">Fase 2: Motor de Sincronización en la Nube y Acceso Multiplataforma</span>
+              <span class="phase-badge badge-progress">En Progreso</span>
+            </div>
+            <p class="phase-desc">Sincronización bidireccional mediante WebSockets y túneles seguros para control desde el móvil.</p>
+            <ul class="deliverables-list">
+              <li>⚡ Integración Firebase Firestore / Supabase Realtime</li>
+              <li>⚡ PWA instalable con Service Workers para ejecución 100% offline</li>
+              <li>⚡ Enlace remoto mediante Cloudflare Zero Trust</li>
+            </ul>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-bullet"></div>
+            <div class="phase-header">
+              <span class="phase-title">Fase 3: Asistente Proactivo de Productividad con IA</span>
+              <span class="phase-badge badge-planned">Planificado</span>
+            </div>
+            <p class="phase-desc">Modelo de lenguaje ligero (Gemini 2.5 Flash) que agrupa tareas dispersas y sugiere horarios óptimos de ejecución según energía y contexto.</p>
+            <ul class="deliverables-list">
+              <li>📋 Parsing de notas de voz a tareas estructuradas con fechas límite</li>
+              <li>📋 Detección de duplicados y dependencias entre proyectos</li>
+              <li>📋 Bloques de tiempo (Time Blocking) automáticos en Google Calendar</li>
+            </ul>
+          </div>
+
+          <div class="phase-item">
+            <div class="phase-bullet" style="background:#64748b; box-shadow:none;"></div>
+            <div class="phase-header">
+              <span class="phase-title">Fase 4: Analítica de Desempeño y Métricas de Hábitos</span>
+              <span class="phase-badge badge-planned">Futuro</span>
+            </div>
+            <p class="phase-desc">Reportes semanales de velocidad de cierre, rachas de cumplimiento y costo de oportunidad.</p>
+            <ul class="deliverables-list">
+              <li>📊 Gráficas de Burn-up y Burn-down por proyecto</li>
+              <li>📊 Gamificación con niveles de productividad y recompensas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EISENHOWER VIEW -->
+    <section id="view-eisenhower" class="view">
+      <div class="card">
+        <div class="card-title">Matriz Eisenhower de Funcionalidades del Backlog</div>
+        <div class="eisenhower-grid">
+          <div class="matrix-quadrant q1">
+            <div class="quadrant-title" style="color: #f43f5e;">🔥 Q1: Urgente e Importante (Hacer Ya)</div>
+            <div class="feature-card"><span>Sincronización en tiempo real sin conflictos</span><span class="phase-badge badge-progress">P1</span></div>
+            <div class="feature-card"><span>Atajos de teclado universales (Quick Capture)</span><span class="phase-badge badge-progress">P1</span></div>
+            <div class="feature-card"><span>Respaldos automáticos cifrados (Backup JSON)</span><span class="phase-badge badge-done">Hecho</span></div>
+          </div>
+
+          <div class="matrix-quadrant q2">
+            <div class="quadrant-title" style="color: #38bdf8;">📅 Q2: Importante, No Urgente (Planificar)</div>
+            <div class="feature-card"><span>Vista de Diagrama de Gantt multi-proyecto</span><span class="phase-badge badge-progress">P2</span></div>
+            <div class="feature-card"><span>Asistente IA para sugerir prioridades</span><span class="phase-badge badge-planned">P2</span></div>
+            <div class="feature-card"><span>Métricas de tiempo invertido ($/Hora)</span><span class="phase-badge badge-planned">P2</span></div>
+          </div>
+
+          <div class="matrix-quadrant q3">
+            <div class="quadrant-title" style="color: #fbbf24;">⚡ Q3: Urgente, No Importante (Automatizar)</div>
+            <div class="feature-card"><span>Recordatorios automáticos vía WhatsApp/Bot</span><span class="phase-badge badge-planned">P3</span></div>
+            <div class="feature-card"><span>Importador masivo de CSV / Trello / Notion</span><span class="phase-badge badge-planned">P3</span></div>
+          </div>
+
+          <div class="matrix-quadrant q4">
+            <div class="quadrant-title" style="color: #94a3b8;">🗑️ Q4: Ni Urgente Ni Importante (Eliminar / Postergar)</div>
+            <div class="feature-card"><span>Temas visuales y skins hiper-personalizados</span><span class="phase-badge badge-planned">P4</span></div>
+            <div class="feature-card"><span>Integraciones sociales o feeds públicos</span><span class="phase-badge badge-planned">P4</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE VIEW -->
+    <section id="view-arch" class="view">
+      <div class="card">
+        <div class="card-title">Stack Tecnológico y Decisiones de Arquitectura</div>
+        <div class="stack-grid">
+          <div class="stack-card">
+            <div class="stack-title">⚛️ Frontend & UI</div>
+            <div class="stack-items">
+              • Next.js 14 / React 19 + TypeScript<br>
+              • Tailwind CSS + Lucide Icons<br>
+              • Framer Motion para transiciones suaves<br>
+              • Arquitectura Server Components (RSC)
+            </div>
+          </div>
+
+          <div class="stack-card">
+            <div class="stack-title">💾 Persistencia & Cache</div>
+            <div class="stack-items">
+              • IndexedDB (cliente) vía Dexie.js<br>
+              • Firebase Firestore / PostgreSQL<br>
+              • LocalStorage para preferencias y temas<br>
+              • Estrategia CRDT para resolución de conflictos
+            </div>
+          </div>
+
+          <div class="stack-card">
+            <div class="stack-title">🤖 IA & Procesamiento</div>
+            <div class="stack-items">
+              • Gemini 2.5 Flash SDK<br>
+              • Parsing semántico de lenguaje natural<br>
+              • Audio transcription vía Whisper API<br>
+              • Clasificación automática de notas
+            </div>
+          </div>
+
+          <div class="stack-card">
+            <div class="stack-title">🚀 Infraestructura & Red</div>
+            <div class="stack-items">
+              • Despliegue en Edge Vercel<br>
+              • Túneles seguros Cloudflare Tunnel<br>
+              • PWA con Service Worker activo<br>
+              • Webhooks para integración WhatsApp
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + tabId).classList.add('active');
+    }
+  </script>
+</body>
+</html>
